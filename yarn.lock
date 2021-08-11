@@ -2988,12 +2988,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/resolve@1.19.0":
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.19.0.tgz#75c729aedd9a0de60650facb16eb33239d3c407a"
-  integrity sha512-NikKq+D2KJzmaWbcz4JLVT34ybtCC4c3jV6XRGWOQvOkXka9QblEmC+sPf3vRa3lmcURkVbCk2V2BDyCO7jbXg==
-  dependencies:
-    "@types/node" "*"
+"@types/resolve@1.20.1":
+  version "1.20.1"
+  resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.20.1.tgz#3727e48042fda81e374f5d5cf2fa92288bf698f8"
+  integrity sha512-Ku5+GPFa12S3W26Uwtw+xyrtIpaZsGYHH6zxNbZlstmlvMYSZRzOwzwsXbxlVUbHyUucctSyuFtu6bNxwYomIw==
 
 "@types/scheduler@*":
   version "0.16.2"
