@@ -34,7 +34,7 @@
     "expo-asset": "^8.2.0",
     "expo-av": "~8.6.0",
     "expo-barcode-scanner": "~9.0.0",
-    "expo-camera": "~9.0.0",
+    "expo-camera": "~11.2.2",
     "prop-types": "^15.6.2",
     "react-native-maps": "^0.25.0",
     "react-native-pager-view": "^5.4.0",
@@ -62,7 +62,7 @@
     "@react-native-picker/picker": "^1.16.4",
     "expo-av": "~8.6.0",
     "expo-barcode-scanner": "~9.0.0",
-    "expo-camera": "~9.0.0",
+    "expo-camera": "~11.2.2",
     "react-native-pager-view": "^5.4.0",
     "react-native-webview": "^11.6.4"
   },
