@@ -21,7 +21,7 @@
     "declaration": false
   },
   "include": [
-    "src"
+    "src_lj"
   ],
   "exclude": [
     "node_modules"
