@@ -36,13 +36,13 @@
 }
 
 .taro-video-container.taro-video-type-fullscreen.taro-video-type-rotate-left {
-  -webkit-transform: translate(-50%,-50%) rotate(-90deg);
-  transform: translate(-50%,-50%) rotate(-90deg)
+  -webkit-transform: translate(-50%, -50%) rotate(-90deg);
+  transform: translate(-50%, -50%) rotate(-90deg)
 }
 
 .taro-video-container.taro-video-type-fullscreen.taro-video-type-rotate-right {
-  -webkit-transform: translate(-50%,-50%) rotate(90deg);
-  transform: translate(-50%,-50%) rotate(90deg)
+  -webkit-transform: translate(-50%, -50%) rotate(90deg);
+  transform: translate(-50%, -50%) rotate(90deg)
 }
 
 .taro-video-video {
@@ -70,7 +70,7 @@
   -webkit-box-align: center;
   -webkit-align-items: center;
   align-items: center;
-  background-color: rgba(1,1,1,.5);
+  background-color: rgba(1, 1, 1, .5);
   z-index: 1
 }
 
@@ -92,7 +92,7 @@
 .taro-video-bar {
   visibility: hidden;
   height: 44px;
-  background-color: rgba(0,0,0,.5);
+  background-color: rgba(0, 0, 0, .5);
   overflow: hidden;
   position: absolute;
   bottom: 0;
@@ -110,6 +110,50 @@
 .taro-video-bar.taro-video-bar-full {
   left: 0
 }
+
+.taro-video-top {
+  visibility: hidden;
+  height: 44px;
+  background-color: rgba(0, 0, 0, .5);
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 1;
+}
+
+.taro-video-top.taro-video-bar-full {
+  left: 0
+}
+
+.taro-video-top-arrow-left {
+  width: 24px;
+  height: 24px;
+  padding: 8.5px;
+  box-sizing: content-box;
+  background-repeat: no-repeat;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAATxJREFUeF7t2rEOwzAIBFD4yOQjm4905SFSh7ZZOO4QZI2EfM/gwbJb88+b57cBmA5oLjAj0LwB5hCcEZgRaC4gPQJrrcPdL+QeyQKstV5mdpjZiUSQBPgIf28+DEEO4Et4KIIUwJ/wG+Fy9zP6PJABYITfmBIArPASAMzwdAB2eCqAQngagEp4CoBS+HQAtfCpAIrh0wBUw6cAKIeHA6iHhwJUCA8DqBIeAlApfDhAtfADgLgPqNYFkAuRSggQgD1bVRBgAFUQoAAVEOAA6ggpAMoIaQCqCKkAigjpAGoIFAAlBBqACgIVQAGBDsBGkABgIsgAsBCkAB4QIO+E5AB+IEDCh1+J7YJRX+tncjdi64eSUZ30VEfyDHhadOT/AYjUrFhrOqDirkWueTogUrNiremAirsWueb2HfAGgiHQQUiqEvkAAAAASUVORK5CYII=);
+  background-size: 50%;
+  background-position: 50% 50%;
+}
+
+.taro-video-top-title {
+  height: 14.5px;
+  line-height: 14.5px;
+  margin-top: 15px;
+  margin-bottom: 14.5px;
+  flex: 1;
+  font-size: 14px;
+  color: #FFFFFF;
+}
+
 
 .taro-video-controls {
   display: -webkit-box;
@@ -139,7 +183,7 @@
   background-repeat: no-repeat
 }
 
-.taro-video-control-button.taro-video-control-button-play:after,.taro-video-cover-play-button {
+.taro-video-control-button.taro-video-control-button-play:after, .taro-video-cover-play-button {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAeCAYAAAAy2w7YAAAAAXNSR0IArs4c6QAAAWhJREFUSA1j+P///0cgBoHjQGzCQCsAtgJB/AMy5wCxGNXtQ9iBwvoA5BUCMQvVLEQxHpNzDSjkRhXLMM3GKrIeKKpEkYVYjcUu+AMo3ALE3GRZiN1MvKKPgbIRJFuG10j8koeA0gZEW4jfLIKyf4EqpgOxMEELCRpFnIJ3QGU5QMyM00LizCFa1SWgSkeslhFtBGkKVwGVy6FYSJp+klR/A6quB2JOkIWMIK0oNlOf8xBoZDE9LAI7nYn6HsBq4l96WHQEaLUpAyiOaASeAM2NgvuPBpaACt82IEYtfKls0UagecpwXyAzqGTRdaA57sjmYrAptAjUsCkGYlYMg9EFyLQI1IiZB8Ti6Obh5JNh0QmgHlOcBuKSIMGi50C18UDMiMssvOJEWPQLqKYbiHnxGkRIkoBF24DyaoTMIEoeh0W3geI+RBlArCI0iz4D+RVAzEasfqLVAQ19AcSg5LoYiKWI1kiiQgCMBLnEEcfDSgAAAABJRU5ErkJggg==)
 }
 
@@ -147,7 +191,7 @@
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAgCAYAAAAffCjxAAAAAXNSR0IArs4c6QAAAFlJREFUSA3tksEKACAIQ7X//5zq98wOgQayum8QaGweHhMzG/6OujzKAymn+0LMqivu1XznWmX8/echTIyMyAgTwA72iIwwAexgj8gIE8CO3aMRbDPMaEy5BRGaKcZv8YxRAAAAAElFTkSuQmCC)
 }
 
-.taro-video-current-time,.taro-video-duration {
+.taro-video-current-time, .taro-video-duration {
   height: 14.5px;
   line-height: 14.5px;
   margin-top: 15px;
@@ -166,7 +210,7 @@
 .taro-video-progress {
   height: 2px;
   margin: 21px 12px;
-  background-color: hsla(0,0%,100%,.4);
+  background-color: hsla(0, 0%, 100%, .4);
   position: relative
 }
 
@@ -178,7 +222,7 @@
   height: 100%;
   -webkit-transition: width .1s;
   transition: width .1s;
-  background-color: hsla(0,0%,100%,.8)
+  background-color: hsla(0, 0%, 100%, .8)
 }
 
 .taro-video-ball {
@@ -225,6 +269,7 @@
   background-position: 50% 50%;
   background-repeat: no-repeat
 }
+
 .taro-video-fullscreen {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAhUlEQVRYR+2WSwrAMAhEnZO3PfmULLooGEFTiIXJ2s/kRY2wzQeb85sE9CRA8jSzY1YfAFzhJBnU1AVgxH2dSiArCnD9QgGzRNnOech48SRABHoSyFb5in3PSbhyo6yvCPQkEM3u7BsPe/0FIvBfAh/vhKmVbO9SWun1qk/PSVi9TcVPBG6R1YIhgWwNpQAAAABJRU5ErkJggg==)
 }
@@ -262,10 +307,10 @@
   left: 100%;
   -webkit-transform: translatex(0);
   transform: translatex(0);
-  -webkit-transition-property: left,-webkit-transform;
-  transition-property: left,-webkit-transform;
-  transition-property: left,transform;
-  transition-property: left,transform,-webkit-transform;
+  -webkit-transition-property: left, -webkit-transform;
+  transition-property: left, -webkit-transform;
+  transition-property: left, transform;
+  transition-property: left, transform, -webkit-transform;
   -webkit-transition-duration: 3s;
   transition-duration: 3s;
   -webkit-transition-timing-function: linear;
@@ -277,10 +322,10 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  -webkit-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   border-radius: 5px;
-  background-color: hsla(0,0%,100%,.8);
+  background-color: hsla(0, 0%, 100%, .8);
   color: #000;
   display: block;
   visibility: hidden;
@@ -320,7 +365,7 @@
   margin-left: 10px
 }
 
-.taro-video-toast-volume .taro-video-toast-value>.taro-video-toast-value-content {
+.taro-video-toast-volume .taro-video-toast-value > .taro-video-toast-value-content {
   overflow: hidden
 }
 
@@ -341,7 +386,7 @@
 }
 
 .taro-video-toast.taro-video-toast-progress {
-  background-color: rgba(0,0,0,.8);
+  background-color: rgba(0, 0, 0, .8);
   color: #fff;
   font-size: 14px;
   line-height: 18px;

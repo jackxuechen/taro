@@ -20,7 +20,7 @@ export const config: Config = {
     // { components: ['taro-checkbox-core', 'taro-checkbox-group-core'] },
     // { components: ['taro-radio-core', 'taro-radio-group-core'] },
     // { components: ['taro-swiper-core', 'taro-swiper-item-core'] },
-    { components: ['my-taro-video-core', 'my-taro-video-control', 'my-taro-video-danmu'] }
+    { components: ['my-taro-video-core', 'my-taro-video-control', 'my-taro-video-control-title', 'my-taro-video-danmu'] }
   ],
   buildEs5: 'prod',
   testing: {

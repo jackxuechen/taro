@@ -16,6 +16,7 @@ import {
 export class Video implements ComponentInterface {
   private videoRef: HTMLVideoElement
   private controlsRef: HTMLTaroVideoControlElement
+  private controlsTitleRef: HTMLTaroVideoControlElement
   private danmuRef: HTMLTaroVideoDanmuElement
   private toastProgressRef: HTMLDivElement
   private toastProgressTitleRef: HTMLDivElement
@@ -30,6 +31,7 @@ export class Video implements ComponentInterface {
   private lastPercentage
   private nextPercentage
   private gestureType = 'none'
+  private wrapperElement: HTMLElement
 
   @Element() el: HTMLTaroVideoCoreElement
 
@@ -138,6 +140,11 @@ export class Video implements ComponentInterface {
    */
   @Prop() vslideGestureInFullscreen = true
 
+  /**
+   * 标题
+   */
+  @Prop() title
+
   @State() _duration: number
   @State() _enableDanmu = false
   @State() isPlaying = false
@@ -188,18 +195,30 @@ export class Video implements ComponentInterface {
     }
     // 目前只支持 danmuList 初始化弹幕列表，还未支持更新弹幕列表
     this.danmuRef.sendDanmu(this.danmuList)
-
-    if (document.addEventListener) {
-      document.addEventListener(screenFn.fullscreenchange, this.handleFullScreenChange)
-    }
   }
 
   componentDidRender () {
-  }
-
-  disconnectedCallback () {
-    if (document.removeEventListener) {
-      document.removeEventListener(screenFn.fullscreenchange, this.handleFullScreenChange)
+    const parentElement = this.el.parentElement as HTMLElement
+    const parentTagName = parentElement.tagName
+    if (this.isFullScreen) {
+      if (parentTagName !== 'BODY') {
+        parentElement.removeChild(this.el)
+        document.body.appendChild(this.el)
+      }
+    } else {
+      if (parentTagName !== 'DIV' || !parentElement.className.includes('taro-video')) {
+        if (!this.wrapperElement) {
+          const container = document.createElement('div')
+          container.className = 'taro-video'
+          parentElement.removeChild(this.el)
+          container.appendChild(this.el)
+          parentElement.appendChild(container)
+          this.wrapperElement = container
+        } else {
+          parentElement.removeChild(this.el)
+          this.wrapperElement.appendChild(this.el)
+        }
+      }
     }
   }
 
@@ -272,6 +291,7 @@ export class Video implements ComponentInterface {
       if (this.controls && this.showProgress) {
         this.controlsRef.setProgressBall(this.nextPercentage)
         this.controlsRef.toggleVisibility(true)
+        this.controlsTitleRef.toggleVisibility(true)
       }
       const duration = this.duration || this._duration
       this.toastProgressTitleRef.innerHTML = `${formatTime(this.nextPercentage * duration)} / ${formatTime(duration)}`
@@ -306,12 +326,14 @@ export class Video implements ComponentInterface {
     this.isPlaying = true
     this.isFirst = false
     this.controlsRef.toggleVisibility(true)
+    this.controlsTitleRef.toggleVisibility(true)
     this.onPlay.emit()
   }
 
   handlePause = () => {
     this.isPlaying = false
     this.controlsRef.toggleVisibility(true)
+    this.controlsTitleRef.toggleVisibility(true)
     this.onPause.emit()
   }
 
@@ -319,6 +341,7 @@ export class Video implements ComponentInterface {
     this.isFirst = true
     this.pause()
     this.controlsRef.toggleVisibility()
+    this.controlsTitleRef.toggleVisibility()
     this.onEnded.emit()
   }
 
@@ -405,16 +428,6 @@ export class Video implements ComponentInterface {
     this.videoRef.currentTime = position
   }
 
-  /** 进入全屏。若有自定义内容需在全屏时展示，需将内容节点放置到 video 节点内。 */
-  @Method() async requestFullScreen () {
-    this.toggleFullScreen(true)
-  }
-
-  /** 退出全屏 */
-  @Method() async exitFullScreen () {
-    this.toggleFullScreen(false)
-  }
-
   onTouchStartContainer = (e: TouchEvent) => {
     this.lastTouchScreenX = e.touches[0].screenX
     this.lastTouchScreenY = e.touches[0].screenY
@@ -430,6 +443,7 @@ export class Video implements ComponentInterface {
       this.lastClickedTime = now
     }
     this.controlsRef.toggleVisibility()
+    this.controlsTitleRef.toggleVisibility()
   }
 
   onClickFullScreenBtn = (e: MouseEvent) => {
@@ -437,39 +451,29 @@ export class Video implements ComponentInterface {
     this.toggleFullScreen()
   }
 
-  handleFullScreenChange = e => {
-    // 全屏后，"退出"走的是浏览器事件，在此同步状态
-    const timestamp = new Date().getTime()
-    if (!e.detail && this.isFullScreen && !document[screenFn.fullscreenElement] && timestamp - this.fullScreenTimestamp > 100) {
-      this.toggleFullScreen(false)
-    }
-  }
-
-  toggleFullScreen = (isFullScreen = !this.isFullScreen) => {
+  toggleFullScreen = (nextFullScreenState?) => {
+    const isFullScreen = nextFullScreenState === undefined ? !this.isFullScreen : nextFullScreenState
     this.isFullScreen = isFullScreen
     this.controlsRef.toggleVisibility(true)
-    this.fullScreenTimestamp = new Date().getTime()
+    this.controlsTitleRef.toggleVisibility(true)
     this.onFullScreenChange.emit({
-      fullScreen: this.isFullScreen,
+      fullScreen: isFullScreen,
       direction: 'vertical'
     })
-    if (this.isFullScreen && !document[screenFn.fullscreenElement]) {
-      setTimeout(() => {
-        this.videoRef[screenFn.requestFullscreen]({ navigationUI: 'show' })
-      }, 0)
-    }
   }
 
   toggleMute = (e: MouseEvent) => {
     e.stopPropagation()
     this.videoRef.muted = !this.isMute
     this.controlsRef.toggleVisibility(true)
+    this.controlsTitleRef.toggleVisibility(true)
     this.isMute = !this.isMute
   }
 
   toggleDanmu = (e: MouseEvent) => {
     e.stopPropagation()
     this.controlsRef.toggleVisibility(true)
+    this.controlsTitleRef.toggleVisibility(true)
     this._enableDanmu = !this._enableDanmu
   }
 
@@ -546,10 +550,25 @@ export class Video implements ComponentInterface {
           <div class='taro-video-cover'>
             <div class='taro-video-cover-play-button' onClick={() => this.play()} />
             <p class='taro-video-cover-duration'>{durationTime}</p>
-            <p class='taro-video-cover-duration'>liujie</p>
           </div>
         )}
-
+        <my-taro-video-control-title
+          ref={ dom => {
+            if (dom) {
+              this.controlsTitleRef = dom
+            }
+          } }
+          controls={ controls }
+          isPlaying={ this.isPlaying }
+          title={this.title}
+        >
+          { showFullscreenBtn && isFullScreen && (
+            <div
+              class='taro-video-top-arrow-left'
+              onClick={ this.onClickFullScreenBtn }
+            />
+          ) }
+        </my-taro-video-control-title>
         <my-taro-video-control
           ref={dom => {
             if (dom) {

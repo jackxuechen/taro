@@ -22,6 +22,12 @@ export namespace Components {
         "showProgress": boolean;
         "toggleVisibility": (nextVisible?: boolean | undefined) => Promise<void>;
     }
+    interface MyTaroVideoControlTitle {
+        "controls": boolean;
+        "isPlaying": boolean;
+        "title": string;
+        "toggleVisibility": (nextVisible?: boolean | undefined) => Promise<void>;
+    }
     interface MyTaroVideoCore {
         /**
           * 是否自动播放
@@ -56,10 +62,6 @@ export namespace Components {
          */
         "enableProgressGesture": boolean;
         /**
-          * 退出全屏
-         */
-        "exitFullScreen": () => Promise<void>;
-        /**
           * 指定视频初始播放位置
          */
         "initialTime": number;
@@ -87,10 +89,6 @@ export namespace Components {
           * 视频封面的图片网络资源地址或云文件ID（2.3.0）。若 controls 属性值为 false 则设置 poster 无效
          */
         "poster": string;
-        /**
-          * 进入全屏。若有自定义内容需在全屏时展示，需将内容节点放置到 video 节点内。
-         */
-        "requestFullScreen": () => Promise<void>;
         /**
           * 跳转到指定位置
          */
@@ -124,6 +122,10 @@ export namespace Components {
          */
         "stop": () => Promise<void>;
         /**
+          * 标题
+         */
+        "title": any;
+        /**
           * 在非全屏模式下，是否开启亮度与音量调节手势
          */
         "vslideGesture": boolean;
@@ -145,6 +147,12 @@ declare global {
         prototype: HTMLMyTaroVideoControlElement;
         new (): HTMLMyTaroVideoControlElement;
     };
+    interface HTMLMyTaroVideoControlTitleElement extends Components.MyTaroVideoControlTitle, HTMLStencilElement {
+    }
+    var HTMLMyTaroVideoControlTitleElement: {
+        prototype: HTMLMyTaroVideoControlTitleElement;
+        new (): HTMLMyTaroVideoControlTitleElement;
+    };
     interface HTMLMyTaroVideoCoreElement extends Components.MyTaroVideoCore, HTMLStencilElement {
     }
     var HTMLMyTaroVideoCoreElement: {
@@ -159,6 +167,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "my-taro-video-control": HTMLMyTaroVideoControlElement;
+        "my-taro-video-control-title": HTMLMyTaroVideoControlTitleElement;
         "my-taro-video-core": HTMLMyTaroVideoCoreElement;
         "my-taro-video-danmu": HTMLMyTaroVideoDanmuElement;
     }
@@ -174,6 +183,11 @@ declare namespace LocalJSX {
         "seekFunc"?: (position: number) => void;
         "showPlayBtn"?: boolean;
         "showProgress"?: boolean;
+    }
+    interface MyTaroVideoControlTitle {
+        "controls"?: boolean;
+        "isPlaying"?: boolean;
+        "title"?: string;
     }
     interface MyTaroVideoCore {
         /**
@@ -261,6 +275,10 @@ declare namespace LocalJSX {
          */
         "src"?: string;
         /**
+          * 标题
+         */
+        "title"?: any;
+        /**
           * 在非全屏模式下，是否开启亮度与音量调节手势
          */
         "vslideGesture"?: boolean;
@@ -274,6 +292,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "my-taro-video-control": MyTaroVideoControl;
+        "my-taro-video-control-title": MyTaroVideoControlTitle;
         "my-taro-video-core": MyTaroVideoCore;
         "my-taro-video-danmu": MyTaroVideoDanmu;
     }
@@ -283,6 +302,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "my-taro-video-control": LocalJSX.MyTaroVideoControl & JSXBase.HTMLAttributes<HTMLMyTaroVideoControlElement>;
+            "my-taro-video-control-title": LocalJSX.MyTaroVideoControlTitle & JSXBase.HTMLAttributes<HTMLMyTaroVideoControlTitleElement>;
             "my-taro-video-core": LocalJSX.MyTaroVideoCore & JSXBase.HTMLAttributes<HTMLMyTaroVideoCoreElement>;
             "my-taro-video-danmu": LocalJSX.MyTaroVideoDanmu & JSXBase.HTMLAttributes<HTMLMyTaroVideoDanmuElement>;
         }
