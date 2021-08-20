@@ -32,6 +32,8 @@ export class Video implements ComponentInterface {
   private nextPercentage
   private gestureType = 'none'
   private wrapperElement: HTMLElement
+  private visible = false
+  private hideControlsTimer: NodeJS.Timeout
 
   @Element() el: HTMLTaroVideoCoreElement
 
@@ -145,6 +147,8 @@ export class Video implements ComponentInterface {
    */
   @Prop() title
 
+  @Prop() direction = 0;
+
   @State() _duration: number
   @State() _enableDanmu = false
   @State() isPlaying = false
@@ -239,7 +243,6 @@ export class Video implements ComponentInterface {
     const nowY = e.touches[0].screenY
     const distX = nowX - (this.lastTouchScreenX as number)
     const distY = nowY - (this.lastTouchScreenY as number)
-    const enableVslideGesture = this.isFullScreen ? this.vslideGestureInFullscreen : this.vslideGesture
 
     if (this.gestureType === 'none') {
       // 两点间距离
@@ -250,9 +253,9 @@ export class Video implements ComponentInterface {
 
       if (Math.abs(distY) >= Math.abs(distX)) {
         // 垂直方向移动：调整音量
-        if (enableVslideGesture) {
-          this.gestureType = 'adjustVolume'
-          this.lastVolume = this.videoRef.volume
+        if (this.enableProgressGesture) {
+          this.gestureType = 'adjustProgress'
+          this.lastPercentage = this.currentTime / (this.duration ?? this._duration)
         } else {
           return obj
         }
@@ -287,11 +290,14 @@ export class Video implements ComponentInterface {
       this.toastVolumeBarRef.style.width = `${nextVolume * 100}%`
     } else if (gestureObj.type === 'adjustProgress') {
       this.isDraggingProgress = true
-      this.nextPercentage = Math.max(Math.min(this.lastPercentage + gestureObj.dataX, 1), 0)
+      if (this.direction == 90) {
+        this.nextPercentage = Math.max(Math.min(this.lastPercentage + gestureObj.dataY, 1), 0)
+      } else {
+        this.nextPercentage = Math.max(Math.min(this.lastPercentage + gestureObj.dataX, 1), 0)
+      }
       if (this.controls && this.showProgress) {
         this.controlsRef.setProgressBall(this.nextPercentage)
-        this.controlsRef.toggleVisibility(true)
-        this.controlsTitleRef.toggleVisibility(true)
+        this.toggleVisibility(true)
       }
       const duration = this.duration || this._duration
       this.toastProgressTitleRef.innerHTML = `${formatTime(this.nextPercentage * duration)} / ${formatTime(duration)}`
@@ -325,23 +331,20 @@ export class Video implements ComponentInterface {
   handlePlay = () => {
     this.isPlaying = true
     this.isFirst = false
-    this.controlsRef.toggleVisibility(true)
-    this.controlsTitleRef.toggleVisibility(true)
+    this.toggleVisibility(true)
     this.onPlay.emit()
   }
 
   handlePause = () => {
     this.isPlaying = false
-    this.controlsRef.toggleVisibility(true)
-    this.controlsTitleRef.toggleVisibility(true)
+    this.toggleVisibility(true)
     this.onPause.emit()
   }
 
   handleEnded = () => {
     this.isFirst = true
     this.pause()
-    this.controlsRef.toggleVisibility()
-    this.controlsTitleRef.toggleVisibility()
+    this.toggleVisibility()
     this.onEnded.emit()
   }
 
@@ -424,6 +427,33 @@ export class Video implements ComponentInterface {
     this._seek(position)
   }
 
+  @Method()
+  clearControlsTimer () {
+    // console.log('clearControlsTimer')
+    this.hideControlsTimer && clearTimeout(this.hideControlsTimer)
+  }
+
+  @Method()
+  async toggleVisibility (nextVisible?: boolean) {
+    const visible = nextVisible == undefined ? !this.visible : nextVisible
+    // console.log('toggleVisibility','nextVisible',nextVisible,'visible',visible,'this.visible',this.visible)
+    if (visible) {
+      this.hideControlsTimer && clearTimeout(this.hideControlsTimer)
+      if (this.isPlaying) {
+        this.hideControlsTimer = setTimeout(() => {
+          this.toggleVisibility(false)
+        }, 2000)
+      }
+      this.controlsRef.style.visibility = 'visible'
+      this.controlsTitleRef.style.visibility = this.isFullScreen ? 'visible' : 'hidden'
+    } else {
+      this.controlsRef.style.visibility = 'hidden'
+      this.controlsTitleRef.style.visibility = 'hidden'
+    }
+    // console.log('controlsRef',this.controlsRef.style.visibility,'controlsTitleRef',this.controlsTitleRef.style.visibility)
+    this.visible = !!visible
+  }
+
   _seek = (position: number) => {
     this.videoRef.currentTime = position
   }
@@ -442,8 +472,7 @@ export class Video implements ComponentInterface {
       }
       this.lastClickedTime = now
     }
-    this.controlsRef.toggleVisibility()
-    this.controlsTitleRef.toggleVisibility()
+    this.toggleVisibility()
   }
 
   onClickFullScreenBtn = (e: MouseEvent) => {
@@ -453,9 +482,9 @@ export class Video implements ComponentInterface {
 
   toggleFullScreen = (nextFullScreenState?) => {
     const isFullScreen = nextFullScreenState === undefined ? !this.isFullScreen : nextFullScreenState
+    // console.log('toggleFullScreen','nextFullScreenState',nextFullScreenState,'isFullScreen',isFullScreen,'this.isFullScreen',this.isFullScreen)
     this.isFullScreen = isFullScreen
-    this.controlsRef.toggleVisibility(true)
-    this.controlsTitleRef.toggleVisibility(true)
+    this.toggleVisibility(isFullScreen)
     this.onFullScreenChange.emit({
       fullScreen: isFullScreen,
       direction: 'vertical'
@@ -465,15 +494,13 @@ export class Video implements ComponentInterface {
   toggleMute = (e: MouseEvent) => {
     e.stopPropagation()
     this.videoRef.muted = !this.isMute
-    this.controlsRef.toggleVisibility(true)
-    this.controlsTitleRef.toggleVisibility(true)
+    this.toggleVisibility(true)
     this.isMute = !this.isMute
   }
 
   toggleDanmu = (e: MouseEvent) => {
     e.stopPropagation()
-    this.controlsRef.toggleVisibility(true)
-    this.controlsTitleRef.toggleVisibility(true)
+    this.toggleVisibility(true)
     this._enableDanmu = !this._enableDanmu
   }
 
@@ -560,7 +587,7 @@ export class Video implements ComponentInterface {
           } }
           controls={ controls }
           isPlaying={ this.isPlaying }
-          title={this.title}
+          title={ this.title }
         >
           { showFullscreenBtn && isFullScreen && (
             <div
@@ -584,6 +611,8 @@ export class Video implements ComponentInterface {
           seekFunc={this._seek}
           showPlayBtn={this.showPlayBtn}
           showProgress={this.showProgress}
+          direction={this.direction}
+          isFullScreen={this.isFullScreen}
         >
           {showMuteBtn && (
             <div

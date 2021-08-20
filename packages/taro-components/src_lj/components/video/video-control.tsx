@@ -8,9 +8,8 @@ import { formatTime } from './utils'
 export class VideoControl implements ComponentInterface {
   private currentTimeRef: HTMLDivElement
   private progressBallRef: HTMLDivElement
-  private visible = false
+  private progressRef: HTMLDivElement
   private isDraggingProgressBall = false
-  private hideControlsTimer: NodeJS.Timeout
   private percentage = 0
   private progressDimentions = {
     left: 0,
@@ -28,13 +27,15 @@ export class VideoControl implements ComponentInterface {
   @Prop() seekFunc: (position: number) => void
   @Prop() showPlayBtn: boolean
   @Prop() showProgress: boolean
+  @Prop() direction:number
+  @Prop() isFullScreen:boolean
 
   @Listen('touchmove', {
     target: 'document'
   })
   onDocumentTouchMove (e: TouchEvent) {
     if (!this.isDraggingProgressBall) return
-    const touchX = e.touches[0].pageX
+    const touchX = (this.isFullScreen && this.direction == 90) ? e.touches[0].pageY : e.touches[0].pageX
     this.percentage = this.calcPercentage(touchX)
     this.setProgressBall(this.percentage)
     this.setCurrentTime(this.percentage * this.duration)
@@ -51,7 +52,7 @@ export class VideoControl implements ComponentInterface {
 
     this.isDraggingProgressBall = false
     this.seekFunc(this.percentage * this.duration)
-    this.toggleVisibility(true)
+    this.controlsRef.parentElement.toggleVisibility(true)
   }
 
   @Method()
@@ -59,23 +60,6 @@ export class VideoControl implements ComponentInterface {
     if (this.progressBallRef) {
       this.progressBallRef.style.left = `${percentage * 100}%`
     }
-  }
-
-  @Method()
-  async toggleVisibility (nextVisible?: boolean) {
-    const visible = nextVisible === undefined ? !this.visible : nextVisible
-    if (visible) {
-      this.hideControlsTimer && clearTimeout(this.hideControlsTimer)
-      if (this.isPlaying) {
-        this.hideControlsTimer = setTimeout(() => {
-          this.toggleVisibility(false)
-        }, 2000)
-      }
-      this.controlsRef.style.visibility = 'visible'
-    } else {
-      this.controlsRef.style.visibility = 'hidden'
-    }
-    this.visible = !!visible
   }
 
   @Method()
@@ -89,6 +73,12 @@ export class VideoControl implements ComponentInterface {
   }
 
   calcPercentage = (pageX: number): number => {
+    if (!this.progressRef) return NaN
+    const rect = this.progressRef.getBoundingClientRect()
+    this.progressDimentions.left = (this.isFullScreen && this.direction == 90) ? rect.top : rect.left
+    this.progressDimentions.width = (this.isFullScreen && this.direction == 90) ? rect.height : rect.width
+    // console.log('liujie-video','rect',rect,'isFullScreen',this.isFullScreen,'direction',this.direction ,this.progressDimentions)
+    // console.log('liujie-video','calcPercentage','pageX',pageX,this.progressDimentions)
     let pos = pageX - this.progressDimentions.left
     pos = Math.max(pos, 0)
     pos = Math.min(pos, this.progressDimentions.width)
@@ -97,15 +87,15 @@ export class VideoControl implements ComponentInterface {
 
   onDragProgressBallStart = () => {
     this.isDraggingProgressBall = true
-    this.hideControlsTimer && clearTimeout(this.hideControlsTimer)
+    this.controlsRef.parentElement.clearControlsTimer()
   }
 
   onClickProgress = (e: MouseEvent) => {
     e.stopPropagation()
-
-    const percentage = this.calcPercentage(e.pageX)
+    const percentage = this.calcPercentage((this.isFullScreen && this.direction == 90) ? e.pageY : e.pageX)
+    // console.log('liujie-video','onClickProgress',percentage,e,'x',e.pageX,'y',e.pageY,'isFullScreen',this.isFullScreen,'direction',this.direction,'duration',this.duration)
     this.seekFunc(percentage * this.duration)
-    this.toggleVisibility(true)
+    this.controlsRef.parentElement.toggleVisibility(true)
   }
 
   render () {
@@ -146,10 +136,7 @@ export class VideoControl implements ComponentInterface {
                 <div
                   class='taro-video-progress'
                   ref={ref => {
-                    if (!ref) return
-                    const rect = ref.getBoundingClientRect()
-                    this.progressDimentions.left = rect.left
-                    this.progressDimentions.width = rect.width
+                    this.progressRef = ref as HTMLDivElement
                   }}>
                   <div class='taro-video-progress-buffered' style={{ width: '100%' }} />
                   <div

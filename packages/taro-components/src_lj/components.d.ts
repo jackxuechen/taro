@@ -10,8 +10,10 @@ export namespace Components {
     interface MyTaroVideoControl {
         "controls": boolean;
         "currentTime": number;
+        "direction": number;
         "duration": number;
         "getIsDraggingProgressBall": () => Promise<boolean>;
+        "isFullScreen": boolean;
         "isPlaying": boolean;
         "pauseFunc": () => void;
         "playFunc": () => void;
@@ -20,19 +22,18 @@ export namespace Components {
         "setProgressBall": (percentage: number) => Promise<void>;
         "showPlayBtn": boolean;
         "showProgress": boolean;
-        "toggleVisibility": (nextVisible?: boolean | undefined) => Promise<void>;
     }
     interface MyTaroVideoControlTitle {
         "controls": boolean;
         "isPlaying": boolean;
         "title": string;
-        "toggleVisibility": (nextVisible?: boolean | undefined) => Promise<void>;
     }
     interface MyTaroVideoCore {
         /**
           * 是否自动播放
          */
         "autoplay": boolean;
+        "clearControlsTimer": () => Promise<void>;
         /**
           * 是否显示默认播放控件（播放/暂停按钮、播放进度、时间）
          */
@@ -45,6 +46,7 @@ export namespace Components {
           * 弹幕列表
          */
         "danmuList": [];
+        "direction": number;
         /**
           * 指定视频时长
          */
@@ -125,6 +127,7 @@ export namespace Components {
           * 标题
          */
         "title": any;
+        "toggleVisibility": (nextVisible?: boolean | undefined) => Promise<void>;
         /**
           * 在非全屏模式下，是否开启亮度与音量调节手势
          */
@@ -176,7 +179,9 @@ declare namespace LocalJSX {
     interface MyTaroVideoControl {
         "controls"?: boolean;
         "currentTime"?: number;
+        "direction"?: number;
         "duration"?: number;
+        "isFullScreen"?: boolean;
         "isPlaying"?: boolean;
         "pauseFunc"?: () => void;
         "playFunc"?: () => void;
@@ -206,6 +211,7 @@ declare namespace LocalJSX {
           * 弹幕列表
          */
         "danmuList"?: [];
+        "direction"?: number;
         /**
           * 指定视频时长
          */
