@@ -105,6 +105,8 @@
   align-items: center;
   padding: 0 10px;
   z-index: 1;
+  transform: translateZ(1px);
+  -webkit-transform:translateZ(1px);
 }
 
 .taro-video-bar.taro-video-bar-full {
@@ -127,6 +129,8 @@
   align-items: center;
   padding: 0 10px;
   z-index: 1;
+  transform: translateZ(1px);
+  -webkit-transform:translateZ(1px);
 }
 
 .taro-video-top.taro-video-bar-full {
