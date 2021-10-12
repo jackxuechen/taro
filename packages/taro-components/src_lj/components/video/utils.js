@@ -1,8 +1,9 @@
 export const formatTime = time => {
-  if (time == null) return ''
+  if (time == null || time === Infinity || isNaN(time)) return ''
   const sec = Math.round(time % 60)
   const min = Math.round((time - sec) / 60)
-  return `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}`
+  const result = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}`
+  return result
 }
 
 export const calcDist = (x, y) => {
