@@ -45,7 +45,7 @@
   "devDependencies": {
     "@tarojs/components": "3.3.19",
     "@types/react-native": "0.66.5",
-    "@types/sinon": "^9.0.8",
+    "@types/sinon": "^10.0.9",
     "cpy-cli": "^3.1.1",
     "expo-constants": "~9.2.0",
     "expo-file-system": "~11.1.3",
