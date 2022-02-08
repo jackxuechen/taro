@@ -87,7 +87,7 @@
     "@types/node": "13.7.2",
     "@types/react": "^17.0.0",
     "@types/resolve": "1.19.0",
-    "@types/sinon": "^7.5.0",
+    "@types/sinon": "^10.0.11",
     "@types/tapable": "1.0.5",
     "@types/webpack": "^4",
     "@types/webpack-dev-server": "3.11.3",
