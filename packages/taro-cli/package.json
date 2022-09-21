@@ -84,7 +84,7 @@
     "eslint-plugin-react": "^7.4.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-taro": "3.3.19",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue": "^9.5.1",
     "fbjs": "^1.0.0",
     "fs-extra": "^5.0.0",
     "generic-names": "^2.0.1",
